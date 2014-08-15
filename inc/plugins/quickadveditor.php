@@ -14,7 +14,7 @@ function quickadveditor_info ()
 		"website"		 => "",
 		"author"		=> "martec",
 		"authorsite"	=> "",
-		"version"		 => "3.0",
+		"version"		 => "3.1",
 		"guid"			   => "",
 		"compatibility" => "17*,18*"
 	);
@@ -50,7 +50,7 @@ function quickadveditor_install()
 		'description'	=> $lang->quickadveditor_qedit_desc,
 		'optionscode'	=> 'onoff',
 		'value'		=> '1',
-		'disporder'	=> '1',
+		'disporder'	=> '2',
 		'gid'		=> $groupid
 	));
 
@@ -111,21 +111,51 @@ opt_editor = {
 		}
 	},
 	emoticonsCompat: true,
-	toolbar: \"{\$basic1}{\$align}{\$font}{\$size}{\$color}{\$removeformat}{\$basic2}image,{\$e​mail}{\$link}|video{\$emoticon}|{\$list}{\$code}quote|maximize,source\",
+	toolbar: \"{\$basic1}{\$align}{\$font}{\$size}{\$color}{\$removeformat}{\$basic2}image,{\$email}{\$link}|video{\$emoticon}|{\$list}{\$code}quote|maximize,source\",
 };
 {\$editor_language}
 
 if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
 	(\$.fn.on || \$.fn.live).call(\$(document), \'focus\', \'textarea[name*=\"value\"]\', function () {
 		\$(this).sceditor(opt_editor);
+		setTimeout(function() { 
+			if (\$(\'textarea[name*=\"value\"]\').sceditor(\'instance\')) {
+				\$(\'textarea[name*=\"value\"]\').sceditor(\'instance\').focus();
+			}
+			offset = \$(\'textarea[name*=\"value\"]\').next().offset().top - 60;
+			setTimeout(function() {
+				\$(\'html, body\').animate({
+					scrollTop: offset
+				}, 700);
+			},200);			
+		},100);
 		{\$sourcemode}
 	});
 }
 
 (\$.fn.on || \$.fn.live).call(\$(document), \'focus\', \'#message\', function () {
 	\$(this).sceditor(opt_editor);
-	MyBBEditor = \$(\"#message\").sceditor(\"instance\");
+	MyBBEditor = \$(this).sceditor(\'instance\');
+		setTimeout(function() { 
+			if (MyBBEditor) {
+				MyBBEditor.focus();
+			}
+			offset = \$(\'#message\').next().offset().top - 60;
+			setTimeout(function() {
+				\$(\'html, body\').animate({
+					scrollTop: offset
+				}, 700);
+			},200);
+		},100);
 	{\$sourcemode}
+});
+
+(\$.fn.on || \$.fn.live).call(\$(document), \'click\', \'a[id*=\"multiquote_link_\"],#clickable_smilies\', function () {
+	if (typeof sceditor == \'undefined\') {
+		\$(\'#message\').sceditor(opt_editor);
+		MyBBEditor = \$(\'#message\').sceditor(\'instance\');
+		{\$sourcemode}
+	}
 });
 
 /**********************************
