@@ -238,227 +238,224 @@ function mycode_inserter_quick($smilies = true)
 {
 	global $db, $mybb, $theme, $templates, $lang, $smiliecache, $cache;
 
-	if($mybb->settings['bbcodeinserter'] != 0)
+	$editor_lang_strings = array(
+		"editor_bold" => "Bold",
+		"editor_italic" => "Italic",
+		"editor_underline" => "Underline",
+		"editor_strikethrough" => "Strikethrough",
+		"editor_subscript" => "Subscript",
+		"editor_superscript" => "Superscript",
+		"editor_alignleft" => "Align left",
+		"editor_center" => "Center",
+		"editor_alignright" => "Align right",
+		"editor_justify" => "Justify",
+		"editor_fontname" => "Font Name",
+		"editor_fontsize" => "Font Size",
+		"editor_fontcolor" => "Font Color",
+		"editor_removeformatting" => "Remove Formatting",
+		"editor_cut" => "Cut",
+		"editor_cutnosupport" => "Your browser does not allow the cut command. Please use the keyboard shortcut Ctrl/Cmd-X",
+		"editor_copy" => "Copy",
+		"editor_copynosupport" => "Your browser does not allow the copy command. Please use the keyboard shortcut Ctrl/Cmd-C",
+		"editor_paste" => "Paste",
+		"editor_pastenosupport" => "Your browser does not allow the paste command. Please use the keyboard shortcut Ctrl/Cmd-V",
+		"editor_pasteentertext" => "Paste your text inside the following box:",
+		"editor_pastetext" => "PasteText",
+		"editor_numlist" => "Numbered list",
+		"editor_bullist" => "Bullet list",
+		"editor_undo" => "Undo",
+		"editor_redo" => "Redo",
+		"editor_rows" => "Rows:",
+		"editor_cols" => "Cols:",
+		"editor_inserttable" => "Insert a table",
+		"editor_inserthr" => "Insert a horizontal rule",
+		"editor_code" => "Code",
+		"editor_width" => "Width (optional):",
+		"editor_height" => "Height (optional):",
+		"editor_insertimg" => "Insert an image",
+		"editor_email" => "E-mail:",
+		"editor_insertemail" => "Insert an email",
+		"editor_url" => "URL:",
+		"editor_insertlink" => "Insert a link",
+		"editor_unlink" => "Unlink",
+		"editor_more" => "More",
+		"editor_insertemoticon" => "Insert an emoticon",
+		"editor_videourl" => "Video URL:",
+		"editor_videotype" => "Video Type:",
+		"editor_insert" => "Insert",
+		"editor_insertyoutubevideo" => "Insert a YouTube video",
+		"editor_currentdate" => "Insert current date",
+		"editor_currenttime" => "Insert current time",
+		"editor_print" => "Print",
+		"editor_viewsource" => "View source",
+		"editor_description" => "Description (optional):",
+		"editor_enterimgurl" => "Enter the image URL:",
+		"editor_enteremail" => "Enter the e-mail address:",
+		"editor_enterdisplayedtext" => "Enter the displayed text:",
+		"editor_enterurl" => "Enter URL:",
+		"editor_enteryoutubeurl" => "Enter the YouTube video URL or ID:",
+		"editor_insertquote" => "Insert a Quote",
+		"editor_invalidyoutube" => "Invalid YouTube video",
+		"editor_dailymotion" => "Dailymotion",
+		"editor_metacafe" => "MetaCafe",
+		"editor_veoh" => "Veoh",
+		"editor_vimeo" => "Vimeo",
+		"editor_youtube" => "Youtube",
+		"editor_facebook" => "Facebook",
+		"editor_liveleak" => "LiveLeak",
+		"editor_insertvideo" => "Insert a video",
+		"editor_php" => "PHP",
+		"editor_maximize" => "Maximize"
+	);
+	$editor_language = "(function ($) {\n$.sceditor.locale[\"mybblang\"] = {\n";
+
+	$editor_languages_count = count($editor_lang_strings);
+	$i = 0;
+	foreach($editor_lang_strings as $lang_string => $key)
 	{
-		$editor_lang_strings = array(
-			"editor_bold" => "Bold",
-			"editor_italic" => "Italic",
-			"editor_underline" => "Underline",
-			"editor_strikethrough" => "Strikethrough",
-			"editor_subscript" => "Subscript",
-			"editor_superscript" => "Superscript",
-			"editor_alignleft" => "Align left",
-			"editor_center" => "Center",
-			"editor_alignright" => "Align right",
-			"editor_justify" => "Justify",
-			"editor_fontname" => "Font Name",
-			"editor_fontsize" => "Font Size",
-			"editor_fontcolor" => "Font Color",
-			"editor_removeformatting" => "Remove Formatting",
-			"editor_cut" => "Cut",
-			"editor_cutnosupport" => "Your browser does not allow the cut command. Please use the keyboard shortcut Ctrl/Cmd-X",
-			"editor_copy" => "Copy",
-			"editor_copynosupport" => "Your browser does not allow the copy command. Please use the keyboard shortcut Ctrl/Cmd-C",
-			"editor_paste" => "Paste",
-			"editor_pastenosupport" => "Your browser does not allow the paste command. Please use the keyboard shortcut Ctrl/Cmd-V",
-			"editor_pasteentertext" => "Paste your text inside the following box:",
-			"editor_pastetext" => "PasteText",
-			"editor_numlist" => "Numbered list",
-			"editor_bullist" => "Bullet list",
-			"editor_undo" => "Undo",
-			"editor_redo" => "Redo",
-			"editor_rows" => "Rows:",
-			"editor_cols" => "Cols:",
-			"editor_inserttable" => "Insert a table",
-			"editor_inserthr" => "Insert a horizontal rule",
-			"editor_code" => "Code",
-			"editor_width" => "Width (optional):",
-			"editor_height" => "Height (optional):",
-			"editor_insertimg" => "Insert an image",
-			"editor_email" => "E-mail:",
-			"editor_insertemail" => "Insert an email",
-			"editor_url" => "URL:",
-			"editor_insertlink" => "Insert a link",
-			"editor_unlink" => "Unlink",
-			"editor_more" => "More",
-			"editor_insertemoticon" => "Insert an emoticon",
-			"editor_videourl" => "Video URL:",
-			"editor_videotype" => "Video Type:",
-			"editor_insert" => "Insert",
-			"editor_insertyoutubevideo" => "Insert a YouTube video",
-			"editor_currentdate" => "Insert current date",
-			"editor_currenttime" => "Insert current time",
-			"editor_print" => "Print",
-			"editor_viewsource" => "View source",
-			"editor_description" => "Description (optional):",
-			"editor_enterimgurl" => "Enter the image URL:",
-			"editor_enteremail" => "Enter the e-mail address:",
-			"editor_enterdisplayedtext" => "Enter the displayed text:",
-			"editor_enterurl" => "Enter URL:",
-			"editor_enteryoutubeurl" => "Enter the YouTube video URL or ID:",
-			"editor_insertquote" => "Insert a Quote",
-			"editor_invalidyoutube" => "Invalid YouTube video",
-			"editor_dailymotion" => "Dailymotion",
-			"editor_metacafe" => "MetaCafe",
-			"editor_veoh" => "Veoh",
-			"editor_vimeo" => "Vimeo",
-			"editor_youtube" => "Youtube",
-			"editor_facebook" => "Facebook",
-			"editor_liveleak" => "LiveLeak",
-			"editor_insertvideo" => "Insert a video",
-			"editor_php" => "PHP",
-			"editor_maximize" => "Maximize"
-		);
-		$editor_language = "(function ($) {\n$.sceditor.locale[\"mybblang\"] = {\n";
+		$i++;
+		$js_lang_string = str_replace("\"", "\\\"", $key);
+		$string = str_replace("\"", "\\\"", $lang->$lang_string);
+		$editor_language .= "\t\"{$js_lang_string}\": \"{$string}\"";
 
-		$editor_languages_count = count($editor_lang_strings);
-		$i = 0;
-		foreach($editor_lang_strings as $lang_string => $key)
+		if($i < $editor_languages_count)
 		{
-			$i++;
-			$js_lang_string = str_replace("\"", "\\\"", $key);
-			$string = str_replace("\"", "\\\"", $lang->$lang_string);
-			$editor_language .= "\t\"{$js_lang_string}\": \"{$string}\"";
-
-			if($i < $editor_languages_count)
-			{
-				$editor_language .= ",";
-			}
-
-			$editor_language .= "\n";
+			$editor_language .= ",";
 		}
 
-		$editor_language .= "}})(jQuery);";
+		$editor_language .= "\n";
+	}
 
-		if(defined("IN_ADMINCP"))
+	$editor_language .= "}})(jQuery);";
+
+	if(defined("IN_ADMINCP"))
+	{
+		global $page;
+		$codeinsertquick = $page->build_codebuttons_editor($editor_language, $smilies);
+	}
+	else
+	{
+		// Smilies
+		$emoticon = "";
+		$emoticons_enabled = "false";
+		if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 		{
-			global $page;
-			$codeinsertquick = $page->build_codebuttons_editor($editor_language, $smilies);
-		}
-		else
-		{
-			// Smilies
-			$emoticon = "";
-			$emoticons_enabled = "false";
-			if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+			$emoticon = ",emoticon";
+			$emoticons_enabled = "true";
+
+			if(!$smiliecache)
 			{
-				$emoticon = ",emoticon";
-				$emoticons_enabled = "true";
-
-				if(!$smiliecache)
+				if(!is_array($smilie_cache))
 				{
-					if(!is_array($smilie_cache))
-					{
-						$smilie_cache = $cache->read("smilies");
-					}
-					foreach($smilie_cache as $smilie)
-					{
-						if($smilie['showclickable'] != 0)
-						{
-							$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-							$smiliecache[$smilie['sid']] = $smilie;
-						}
-					}
+					$smilie_cache = $cache->read("smilies");
 				}
-
-				unset($smilie);
-
-				if(is_array($smiliecache))
+				foreach($smilie_cache as $smilie)
 				{
-					reset($smiliecache);
-
-					$dropdownsmilies = $moresmilies = $hiddensmilies = "";
-					$i = 0;
-
-					foreach($smiliecache as $smilie)
+					if($smilie['showclickable'] != 0)
 					{
-						$finds = explode("\n", $smilie['find']);
-						$finds_count = count($finds);
-
-						// Only show the first text to replace in the box
-						$smilie['find'] = $finds[0];
-
-						$find = htmlspecialchars_uni($smilie['find']);
-						$image = htmlspecialchars_uni($smilie['image']);
-						if($i < $mybb->settings['smilieinsertertot'])
-						{
-							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
-						}
-						else
-						{
-							$moresmilies .= '"'.$find.'": "'.$image.'",';
-						}
-
-						for($j = 1; $j < $finds_count; ++$j)
-						{
-							$find = htmlspecialchars_uni($finds[$j]);
-							$hiddensmilies .= '"'.$find.'": "'.$image.'",';
-						}
-						++$i;
+						$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+						$smiliecache[$smilie['sid']] = $smilie;
 					}
 				}
 			}
 
-			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = $sourcemode = "";
+			unset($smilie);
 
-			if($mybb->settings['allowbasicmycode'] == 1)
+			if(is_array($smiliecache))
 			{
-				$basic1 = "bold,italic,underline,strike|";
-				$basic2 = "horizontalrule,";
-			}
+				reset($smiliecache);
 
-			if($mybb->settings['allowalignmycode'] == 1)
-			{
-				$align = "left,center,right,justify|";
-			}
+				$dropdownsmilies = $moresmilies = $hiddensmilies = "";
+				$i = 0;
 
-			if($mybb->settings['allowfontmycode'] == 1)
-			{
-				$font = "font,";
-			}
+				foreach($smiliecache as $smilie)
+				{
+					$finds = explode("\n", $smilie['find']);
+					$finds_count = count($finds);
 
-			if($mybb->settings['allowsizemycode'] == 1)
-			{
-				$size = "size,";
-			}
+					// Only show the first text to replace in the box
+					$smilie['find'] = $finds[0];
 
-			if($mybb->settings['allowcolormycode'] == 1)
-			{
-				$color = "color,";
-			}
+					$find = htmlspecialchars_uni($smilie['find']);
+					$image = htmlspecialchars_uni($smilie['image']);
+					if($i < $mybb->settings['smilieinsertertot'])
+					{
+						$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+					}
+					else
+					{
+						$moresmilies .= '"'.$find.'": "'.$image.'",';
+					}
 
-			if($mybb->settings['allowfontmycode'] == 1 || $mybb->settings['allowsizemycode'] == 1 || $mybb->settings['allowcolormycode'] == 1)
-			{
-				$removeformat = "removeformat|";
+					for($j = 1; $j < $finds_count; ++$j)
+					{
+						$find = htmlspecialchars_uni($finds[$j]);
+						$hiddensmilies .= '"'.$find.'": "'.$image.'",';
+					}
+					++$i;
+				}
 			}
-
-			if($mybb->settings['allowemailmycode'] == 1)
-			{
-				$email = "email,";
-			}
-
-			if($mybb->settings['allowlinkmycode'] == 1)
-			{
-				$link = "link,unlink";
-			}
-
-			if($mybb->settings['allowlistmycode'] == 1)
-			{
-				$list = "bulletlist,orderedlist|";
-			}
-
-			if($mybb->settings['allowcodemycode'] == 1)
-			{
-				$code = "code,php,";
-			}
-
-			if($mybb->user['sourceeditor'] == 1)
-			{
-				$sourcemode = "MyBBEditor.sourceMode(true);";
-			}
-
-			eval("\$codeinsertquick = \"".$templates->get("codebutquick")."\";");
 		}
+
+		$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = $sourcemode = "";
+
+		if($mybb->settings['allowbasicmycode'] == 1)
+		{
+			$basic1 = "bold,italic,underline,strike|";
+			$basic2 = "horizontalrule,";
+		}
+
+		if($mybb->settings['allowalignmycode'] == 1)
+		{
+			$align = "left,center,right,justify|";
+		}
+
+		if($mybb->settings['allowfontmycode'] == 1)
+		{
+			$font = "font,";
+		}
+
+		if($mybb->settings['allowsizemycode'] == 1)
+		{
+			$size = "size,";
+		}
+
+		if($mybb->settings['allowcolormycode'] == 1)
+		{
+			$color = "color,";
+		}
+
+		if($mybb->settings['allowfontmycode'] == 1 || $mybb->settings['allowsizemycode'] == 1 || $mybb->settings['allowcolormycode'] == 1)
+		{
+			$removeformat = "removeformat|";
+		}
+
+		if($mybb->settings['allowemailmycode'] == 1)
+		{
+			$email = "email,";
+		}
+
+		if($mybb->settings['allowlinkmycode'] == 1)
+		{
+			$link = "link,unlink";
+		}
+
+		if($mybb->settings['allowlistmycode'] == 1)
+		{
+			$list = "bulletlist,orderedlist|";
+		}
+
+		if($mybb->settings['allowcodemycode'] == 1)
+		{
+			$code = "code,php,";
+		}
+
+		if($mybb->user['sourceeditor'] == 1)
+		{
+			$sourcemode = "MyBBEditor.sourceMode(true);";
+		}
+
+		eval("\$codeinsertquick = \"".$templates->get("codebutquick")."\";");
 	}
 
 	return $codeinsertquick;
