@@ -14,7 +14,7 @@ function quickadveditor_info ()
 		"website"		 => "",
 		"author"		=> "martec",
 		"authorsite"	=> "",
-		"version"		 => "3.2.1",
+		"version"		 => "3.2.2",
 		"guid"			   => "",
 		"compatibility" => "17*,18*"
 	);
@@ -212,6 +212,13 @@ if(typeof Thread !== \'undefined\')
 		'#' . preg_quote('<span class="smalltext">{$lang->message_note}<br />') . '#i',
 		'<span class="smalltext">{$lang->message_note}<br />{$smilieinserter}'
 	);
+
+	find_replace_templatesets(
+		'showthread',
+		'#' . preg_quote('<body>') . '#i',
+		'<body>
+	{$codebutquickedt}'
+	);	
 }
 
 function quickadveditor_deactivate()
@@ -232,6 +239,13 @@ function quickadveditor_deactivate()
 		'#' . preg_quote('<span class="smalltext">{$lang->message_note}<br />{$smilieinserter}') . '#i',
 		'<span class="smalltext">{$lang->message_note}<br />'
 	);
+
+	find_replace_templatesets(
+		'showthread',
+		'#' . preg_quote('<body>
+	{$codebutquickedt}') . '#i',
+		'<body>'
+	);	
 }
 
 function mycode_inserter_quick($smilies = true)
@@ -465,13 +479,16 @@ $plugins->add_hook("showthread_start", "codebuttonsquick");
 
 function codebuttonsquick () {
 
-	global $smilieinserter, $codebutquick, $mybb;
+	global $smilieinserter, $codebutquick, $codebutquickedt, $mybb;
 
 	$codebutquick = mycode_inserter_quick();
-	$smilieinserter = '';
+	$smilieinserter = $codebutquickedt = '';
 	if($mybb->settings['quickadveditor_smile'] != 0) {
 		$smilieinserter = build_clickable_smilies();
 	}
+	if($mybb->settings['quickreply'] == 0) {
+		$codebutquickedt = mycode_inserter_quick();
+	}	
 }
 
 ?>
