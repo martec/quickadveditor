@@ -14,7 +14,7 @@ function quickadveditor_info ()
 		"website"		 => "",
 		"author"		=> "martec",
 		"authorsite"	=> "",
-		"version"		 => "3.2.3",
+		"version"		 => "3.3",
 		"guid"			   => "",
 		"compatibility" => "17*,18*"
 	);
@@ -88,7 +88,7 @@ function quickadveditor_activate()
 <script type=\"text/javascript\" src=\"{\$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js\"></script>
 <script type=\"text/javascript\" src=\"{\$mybb->asset_url}/jscripts/bbcodes_sceditor.js\"></script>
 <script type=\"text/javascript\">
-if({\$(\'#clickable_smilies\')) {
+if(\$(\'#clickable_smilies\')) {
 	\$(\'#clickable_smilies\').closest(\'div\').hide();
 }
 var partialmode = {\$mybb->settings[\'partialmode\']},
@@ -139,7 +139,7 @@ if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
 (\$.fn.on || \$.fn.live).call(\$(document), \'focus\', \'#message\', function () {
 	if (typeof sceditor == \'undefined\') {
 		\$(this).sceditor(opt_editor);
-		if({\$(\'#clickable_smilies\')) {
+		if(\$(\'#clickable_smilies\')) {
 			\$(\'#clickable_smilies\').closest(\'div\').show();
 		}
 		MyBBEditor = \$(this).sceditor(\'instance\');
@@ -161,7 +161,7 @@ if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
 (\$.fn.on || \$.fn.live).call(\$(document), \'click\', \'a[id*=\"multiquote_link_\"]\', function () {
 	if (typeof sceditor == \'undefined\') {
 		\$(\'#message\').sceditor(opt_editor);
-		if({\$(\'#clickable_smilies\')) {
+		if(\$(\'#clickable_smilies\')) {
 			\$(\'#clickable_smilies\').closest(\'div\').show();
 		}
 		MyBBEditor = \$(\'#message\').sceditor(\'instance\');
@@ -171,7 +171,7 @@ if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
 
 if(Cookie.get(\'multiquote\')) {
 	\$(\'#message\').sceditor(opt_editor);
-	if({\$(\'#clickable_smilies\')) {
+	if(\$(\'#clickable_smilies\')) {
 		\$(\'#clickable_smilies\').closest(\'div\').show();
 	}
 	MyBBEditor = \$(\'#message\').sceditor(\'instance\');
