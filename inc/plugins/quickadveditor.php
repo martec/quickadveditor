@@ -14,7 +14,7 @@ function quickadveditor_info ()
 		"website"		 => "",
 		"author"		=> "martec",
 		"authorsite"	=> "",
-		"version"		 => "3.3.2",
+		"version"		 => "4.0.0",
 		"guid"			   => "",
 		"compatibility" => "17*,18*"
 	);
@@ -136,29 +136,7 @@ if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
 	});
 }
 
-(\$.fn.on || \$.fn.live).call(\$(document), \'focus\', \'#message\', function () {
-	if (typeof sceditor == \'undefined\') {
-		\$(this).sceditor(opt_editor);
-		if(\$(\'#clickable_smilies\').length) {
-			\$(\'#clickable_smilies\').closest(\'div\').show();
-		}
-		MyBBEditor = \$(this).sceditor(\'instance\');
-			setTimeout(function() {
-				if (MyBBEditor) {
-					MyBBEditor.focus();
-				}
-				offset = \$(\'#message\').next().offset().top - 60;
-				setTimeout(function() {
-					\$(\'html, body\').animate({
-						scrollTop: offset
-					}, 700);
-				},200);
-			},100);
-		{\$sourcemode}
-	}
-});
-
-(\$.fn.on || \$.fn.live).call(\$(document), \'click\', \'a[id*=\"multiquote_link_\"]\', function () {
+function call_editor() {
 	if (typeof sceditor == \'undefined\') {
 		\$(\'#message\').sceditor(opt_editor);
 		if(\$(\'#clickable_smilies\').length) {
@@ -167,15 +145,33 @@ if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
 		MyBBEditor = \$(\'#message\').sceditor(\'instance\');
 		{\$sourcemode}
 	}
+}
+
+function focus_editor() {
+	setTimeout(function() {
+		if (MyBBEditor) {
+			MyBBEditor.focus();
+		}
+		offset = \$(\'#message\').next().offset().top - 60;
+		setTimeout(function() {
+			\$(\'html, body\').animate({
+				scrollTop: offset
+			}, 700);
+		},200);
+	},100);
+}
+
+(\$.fn.on || \$.fn.live).call(\$(document), \'focus\', \'#message\', function () {
+	call_editor();
+	focus_editor();
+});
+
+(\$.fn.on || \$.fn.live).call(\$(document), \'click\', \'a[id*=\"multiquote_link_\"]\', function () {
+	call_editor();
 });
 
 if(Cookie.get(\'multiquote\')) {
-	\$(\'#message\').sceditor(opt_editor);
-	if(\$(\'#clickable_smilies\').length) {
-		\$(\'#clickable_smilies\').closest(\'div\').show();
-	}
-	MyBBEditor = \$(\'#message\').sceditor(\'instance\');
-	{\$sourcemode}
+	call_editor();
 };
 
 /**********************************
@@ -218,7 +214,7 @@ if(typeof Thread !== \'undefined\')
 		'#' . preg_quote('<body>') . '#i',
 		'<body>
 	{$codebutquickedt}'
-	);	
+	);
 }
 
 function quickadveditor_deactivate()
@@ -245,7 +241,7 @@ function quickadveditor_deactivate()
 		'#' . preg_quote('<body>
 	{$codebutquickedt}') . '#i',
 		'<body>'
-	);	
+	);
 }
 
 function mycode_inserter_quick($smilies = true)
@@ -488,7 +484,7 @@ function codebuttonsquick () {
 	}
 	if($mybb->settings['quickreply'] == 0) {
 		$codebutquickedt = mycode_inserter_quick();
-	}	
+	}
 }
 
 ?>
