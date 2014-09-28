@@ -19,7 +19,7 @@ function quickadveditor_info ()
 		"website"		 => "",
 		"author"		=> "martec",
 		"authorsite"	=> "",
-		"version"		 => "5.0.1",
+		"version"		 => "5.0.2",
 		"guid"			   => "",
 		"compatibility" => "18*"
 	);
