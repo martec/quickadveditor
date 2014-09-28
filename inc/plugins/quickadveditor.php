@@ -19,7 +19,7 @@ function quickadveditor_info ()
 		"website"		 => "",
 		"author"		=> "martec",
 		"authorsite"	=> "",
-		"version"		 => "5.0.0",
+		"version"		 => "5.0.1",
 		"guid"			   => "",
 		"compatibility" => "18*"
 	);
@@ -203,8 +203,8 @@ if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
 	\$(\'#message\').height(\'280px\');
 	var link_can = document.querySelector(\"link[rel=\'canonical\']\");
 	\$(\'#message\').sceditor(opt_editor);
-	{\$sourcemode}
 	MyBBEditor = $(\'#message\').sceditor(\'instance\');
+	{\$sourcemode}
 	if({\$mybb->settings[\'quickadveditor_autosave\']}!=0) {
 		MyBBEditor.blur(function(e) {
 			if (MyBBEditor.val()) {
