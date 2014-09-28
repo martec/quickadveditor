@@ -8,15 +8,20 @@ if(!defined("IN_MYBB"))
 // Plugin info
 function quickadveditor_info ()
 {
+
+	global $db, $lang;
+
+	$lang->load('config_quickadveditor');
+
 	return array(
 		"name"			  => "Quick Advanced Editor",
-		"description"	 => "Advanced editor in quick reply",
+		"description"	 => $lang->quickadveditor_plug_desc,
 		"website"		 => "",
 		"author"		=> "martec",
 		"authorsite"	=> "",
-		"version"		 => "4.0.0",
+		"version"		 => "5.0.0",
 		"guid"			   => "",
-		"compatibility" => "17*,18*"
+		"compatibility" => "18*"
 	);
 }
 
@@ -29,7 +34,7 @@ function quickadveditor_install()
 	$groupid = $db->insert_query('settinggroups', array(
 		'name'		=> 'quickadveditor',
 		'title'		=> 'Quick Advanced Editor',
-		'description'	=> 'Settings related to the Quick Advanced Editor.',
+		'description'	=> $lang->quickadveditor_sett_desc,
 		'disporder'	=> $dorder,
 		'isdefault'	=> '0'
 	));
@@ -39,7 +44,7 @@ function quickadveditor_install()
 		'title'		=> $lang->quickadveditor_smile_title,
 		'description'	=> $lang->quickadveditor_smile_desc,
 		'optionscode'	=> 'onoff',
-		'value'		=> '1',
+		'value'		=> '0',
 		'disporder'	=> '1',
 		'gid'		=> $groupid
 	));
@@ -51,6 +56,46 @@ function quickadveditor_install()
 		'optionscode'	=> 'onoff',
 		'value'		=> '1',
 		'disporder'	=> '2',
+		'gid'		=> $groupid
+	));
+
+	$db->insert_query('settings', array(
+		'name'		=> 'quickadveditor_autosave',
+		'title'		=> $lang->quickadveditor_autosave_title,
+		'description'	=> $lang->quickadveditor_autosave_desc,
+		'optionscode'	=> 'onoff',
+		'value'		=> '1',
+		'disporder'	=> '3',
+		'gid'		=> $groupid
+	));
+
+	$db->insert_query('settings', array(
+		'name'		=> 'quickadveditor_canonicallink',
+		'title'		=> $lang->quickadveditor_canonical_title,
+		'description'	=> $lang->quickadveditor_canonical_desc,
+		'optionscode'	=> 'onoff',
+		'value'		=> '1',
+		'disporder'	=> '4',
+		'gid'		=> $groupid
+	));
+
+	$db->insert_query('settings', array(
+		'name'		=> 'quickadveditor_save_lang',
+		'title'		=> $lang->quickadveditor_save_title,
+		'description'	=> $lang->quickadveditor_save_desc,
+		'optionscode'	=> 'text',
+		'value'		=> $lang->quickadveditor_save_default,
+		'disporder'	=> '5',
+		'gid'		=> $groupid
+	));
+
+	$db->insert_query('settings', array(
+		'name'		=> 'quickadveditor_restor_lang',
+		'title'		=> $lang->quickadveditor_restor_title,
+		'description'	=> $lang->quickadveditor_restor_desc,
+		'optionscode'	=> 'text',
+		'value'		=> $lang->quickadveditor_restor_default,
+		'disporder'	=> '6',
 		'gid'		=> $groupid
 	));
 
@@ -73,6 +118,10 @@ function quickadveditor_uninstall()
 
 	$db->write_query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name IN('quickadveditor_smile')");
 	$db->write_query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name IN('quickadveditor_qedit')");
+	$db->write_query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name IN('quickadveditor_autosave')");
+	$db->write_query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name IN('quickadveditor_canonicallink')");
+	$db->write_query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name IN('quickadveditor_save_lang')");
+	$db->write_query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name IN('quickadveditor_restor_lang')");
 	$db->delete_query("settinggroups", "name = 'quickadveditor'");
 }
 
@@ -88,16 +137,13 @@ function quickadveditor_activate()
 <script type=\"text/javascript\" src=\"{\$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js\"></script>
 <script type=\"text/javascript\" src=\"{\$mybb->asset_url}/jscripts/bbcodes_sceditor.js\"></script>
 <script type=\"text/javascript\">
-if(\$(\'#clickable_smilies\').length) {
-	\$(\'#clickable_smilies\').closest(\'div\').hide();
-}
 var partialmode = {\$mybb->settings[\'partialmode\']},
 opt_editor = {
 	plugins: \"bbcode\",
-	height: 270,
 	style: \"{\$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.mybb.css\",
 	rtl: {\$lang->settings[\'rtl\']},
 	locale: \"mybblang\",
+	enablePasteFiltering: true,
 	emoticonsEnabled: {\$emoticons_enabled},
 	emoticons: {
 		// Emoticons to be included in the dropdown
@@ -119,60 +165,88 @@ opt_editor = {
 {\$editor_language}
 
 if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
-	(\$.fn.on || \$.fn.live).call(\$(document), \'focus\', \'textarea[name*=\"value\"]\', function () {
-		\$(this).sceditor(opt_editor);
+	(\$.fn.on || \$.fn.live).call(\$(document), \'click\', \'.quick_edit_button\', function () {
+		\$.jGrowl(\'<img src=\"images/spinner_big.gif\" />\');
+		ed_id = \$(this).attr(\'id\');
+		var pid = ed_id.replace( /[^0-9]/g, \'\');
+		\$(\'#quickedit_\'+pid).height(\'300px\');
 		setTimeout(function() {
-			if (\$(\'textarea[name*=\"value\"]\').sceditor(\'instance\')) {
-				\$(\'textarea[name*=\"value\"]\').sceditor(\'instance\').focus();
+			\$(\'#quickedit_\'+pid).sceditor(opt_editor);
+			if (\$(\'#quickedit_\'+pid).sceditor(\'instance\')) {
+				\$(\'#quickedit_\'+pid).sceditor(\'instance\').focus();
 			}
-			offset = \$(\'textarea[name*=\"value\"]\').next().offset().top - 60;
+			offset = \$(\'#quickedit_\'+pid).next().offset().top - 60;
 			setTimeout(function() {
 				\$(\'html, body\').animate({
 					scrollTop: offset
 				}, 700);
+				setTimeout(function() {
+					\$(\'#pid_\'+pid).find(\'button[type=\"submit\"]\').attr( \'id\', \'quicksub_\'+pid );
+				},200);
+				if($(\".jGrowl-notification:last-child\").length) {
+					$(\".jGrowl-notification:last-child\").remove();
+				}
 			},200);
-		},100);
-		{\$sourcemode}
+			\$(\'#quickedit_\'+pid).sceditor(\'instance\').sourceMode(true);
+		},400);
 	});
 }
 
-function call_editor() {
-	if (typeof sceditor == \'undefined\') {
-		\$(\'#message\').sceditor(opt_editor);
-		if(\$(\'#clickable_smilies\').length) {
-			\$(\'#clickable_smilies\').closest(\'div\').show();
-		}
-		MyBBEditor = \$(\'#message\').sceditor(\'instance\');
-		{\$sourcemode}
-	}
-}
+(\$.fn.on || \$.fn.live).call(\$(document), \'click\', \'button[id*=\"quicksub_\"]\', function () {
+	ed_id = \$(this).attr(\'id\');
+	pid = ed_id.replace( /[^0-9]/g, \'\');
+	\$(\'#quickedit_\'+pid).sceditor(\'instance\').updateOriginal();
+});
 
-function focus_editor() {
-	setTimeout(function() {
-		if (MyBBEditor) {
-			MyBBEditor.focus();
-		}
-		offset = \$(\'#message\').next().offset().top - 60;
+
+\$(document).ready(function() {
+	\$(\'#message\').height(\'280px\');
+	var link_can = document.querySelector(\"link[rel=\'canonical\']\");
+	\$(\'#message\').sceditor(opt_editor);
+	{\$sourcemode}
+	MyBBEditor = $(\'#message\').sceditor(\'instance\');
+	if({\$mybb->settings[\'quickadveditor_autosave\']}!=0) {
+		MyBBEditor.blur(function(e) {
+			if (MyBBEditor.val()) {
+				localStorage.setItem(link_can + \'quickreply\', MyBBEditor.val())
+			}
+			else {
+				localStorage.removeItem(link_can + \'quickreply\');
+			}
+		});
+		setInterval(function() {
+			if (MyBBEditor) {
+				if (MyBBEditor.val() != localStorage.getItem(link_can + \'quickreply\')) {
+					if (MyBBEditor.val()) {
+						if(!\$(\'#autosave\').length) {
+							\$(\'<div/>\', { id: \'autosave\', class: \'bottom-right\' }).appendTo(\'body\');
+						}
+						setTimeout(function() {
+							\$(\'#autosave\').jGrowl(\'{\$mybb->settings[\'quickadveditor_save_lang\']}\', { life: 500 });
+						},200);
+						localStorage.setItem(link_can + \'quickreply\', MyBBEditor.val());
+					}
+					else {
+						localStorage.removeItem(link_can + \'quickreply\');
+					}
+				}
+			}
+		},15000);
+
 		setTimeout(function() {
-			\$(\'html, body\').animate({
-				scrollTop: offset
-			}, 700);
-		},200);
-	},100);
-}
-
-(\$.fn.on || \$.fn.live).call(\$(document), \'focus\', \'#message\', function () {
-	call_editor();
-	focus_editor();
+			restitem = localStorage.getItem(link_can + \'quickreply\');
+			if (restitem) {
+				if(!\$(\'#autosave\').length) {
+					\$(\'<div/>\', { id: \'autosave\', class: \'bottom-right\' }).appendTo(\'body\');
+				}
+				setTimeout(function() {
+					\$(\'#autosave\').jGrowl(\'{\$mybb->settings[\'quickadveditor_restor_lang\']}\', { life: 500 });
+				},200);
+				MyBBEditor.val(restitem);
+			}
+		},600);
+	}
 });
-
-(\$.fn.on || \$.fn.live).call(\$(document), \'click\', \'a[id*=\"multiquote_link_\"]\', function () {
-	call_editor();
-});
-
-if(Cookie.get(\'multiquote\')) {
-	call_editor();
-};
 
 /**********************************
  * Thread compatibility functions *
@@ -181,9 +255,12 @@ if(typeof Thread !== \'undefined\')
 {
 	var quickReplyFunc = Thread.quickReply;
 	Thread.quickReply = function(e) {
-
+		var link_can = document.querySelector(\"link[rel=\'canonical\']\").href;
 		if(MyBBEditor) {
 			MyBBEditor.updateOriginal();
+			if({\$mybb->settings[\'quickadveditor_autosave\']}!=0) {
+				localStorage.removeItem(link_can + \'quickreply\');
+			}
 			$(\'form[id*=\"quick_reply_form\"]\').bind(\'reset\', function() {
 				MyBBEditor.val(\'\').emoticons(true);
 			});
@@ -215,6 +292,13 @@ if(typeof Thread !== \'undefined\')
 		'<body>
 	{$codebutquickedt}'
 	);
+
+	find_replace_templatesets(
+		'showthread',
+		'#' . preg_quote('{$headerinclude}') . '#i',
+		'{$headerinclude}
+{$can_link}'
+	);
 }
 
 function quickadveditor_deactivate()
@@ -242,9 +326,16 @@ function quickadveditor_deactivate()
 	{$codebutquickedt}') . '#i',
 		'<body>'
 	);
+
+	find_replace_templatesets(
+		'showthread',
+		'#' . preg_quote('{$headerinclude}
+{$can_link}') . '#i',
+		'{$headerinclude}'
+	);
 }
 
-function mycode_inserter_quick($smilies = true)
+function mycode_inserter_quick_lite($smilies = true)
 {
 	global $db, $mybb, $theme, $templates, $lang, $smiliecache, $cache;
 
@@ -471,19 +562,54 @@ function mycode_inserter_quick($smilies = true)
 	return $codeinsertquick;
 }
 
-$plugins->add_hook("showthread_start", "codebuttonsquick");
+$plugins->add_hook("showthread_start", "codebuttonsquick_lite");
 
-function codebuttonsquick () {
+function codebuttonsquick_lite () {
 
 	global $smilieinserter, $codebutquick, $codebutquickedt, $mybb;
 
-	$codebutquick = mycode_inserter_quick();
+	$codebutquick = mycode_inserter_quick_lite();
 	$smilieinserter = $codebutquickedt = '';
 	if($mybb->settings['quickadveditor_smile'] != 0) {
 		$smilieinserter = build_clickable_smilies();
 	}
 	if($mybb->settings['quickreply'] == 0) {
-		$codebutquickedt = mycode_inserter_quick();
+		$codebutquickedt = mycode_inserter_quick_lite();
+	}
+}
+
+$plugins->add_hook('postbit', 'canonical_postbit');
+
+function canonical_lite($link)
+{
+    global $settings, $plugins, $can_link;
+
+    if($link)
+    {
+        $plugins->add_hook('showthread_start', 'google_seo_meta_output');
+        $can_link = "<link rel=\"canonical\" href=\"{$settings['bburl']}/$link\" />";
+    }
+}
+
+function canonical_postbit(&$post)
+{
+	global $templates, $lang, $mybb, $postcounter, $tid, $page;
+
+	if($mybb->settings['quickadveditor_canonicallink'] != 0) {
+		if (($postcounter - 1) % $mybb->settings['postsperpage'] == "0") {
+			if($tid > 0)
+			{
+				if($page > 1)
+				{
+					canonical_lite(get_thread_link($tid, $page));
+				}
+
+				else
+				{
+					canonical_lite(get_thread_link($tid));
+				}
+			}
+		}
 	}
 }
 
