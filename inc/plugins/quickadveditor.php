@@ -19,7 +19,7 @@ function quickadveditor_info ()
 		"website"		 => "",
 		"author"		=> "martec",
 		"authorsite"	=> "",
-		"version"		 => "5.0.2",
+		"version"		 => "5.1.0",
 		"guid"			   => "",
 		"compatibility" => "18*"
 	);
@@ -187,7 +187,9 @@ if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
 					$(\".jGrowl-notification:last-child\").remove();
 				}
 			},200);
-			\$(\'#quickedit_\'+pid).sceditor(\'instance\').sourceMode(true);
+			if(\'{\$sourcemode}\' != \'\') {
+				\$(\'#quickedit_\'+pid).sceditor(\'instance\').sourceMode(true);
+			}
 		},400);
 	});
 }
@@ -333,6 +335,25 @@ function quickadveditor_deactivate()
 {$can_link}') . '#i',
 		'{$headerinclude}'
 	);
+}
+
+$plugins->add_hook('global_start', 'advedt_cache_codebutquick');
+function advedt_cache_codebutquick()
+{
+	global $templatelist, $mybb;
+
+	if (isset($templatelist)) {
+		$templatelist .= ',';
+	}
+
+	if (THIS_SCRIPT == 'showthread.php') {
+		if($mybb->settings['quickadveditor_smile'] != 0) {
+			$templatelist .= 'codebutquick,smilieinsert,smilieinsert_smilie,smilieinsert_getmore';	
+		}
+		else {
+			$templatelist .= 'codebutquick';		
+		}
+	}
 }
 
 function mycode_inserter_quick_lite($smilies = true)
