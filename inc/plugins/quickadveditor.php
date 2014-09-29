@@ -19,7 +19,7 @@ function quickadveditor_info ()
 		"website"		 => "",
 		"author"		=> "martec",
 		"authorsite"	=> "",
-		"version"		 => "5.1.0",
+		"version"		 => "5.1.1",
 		"guid"			   => "",
 		"compatibility" => "18*"
 	);
@@ -188,7 +188,7 @@ if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
 				}
 			},200);
 			if(\'{\$sourcemode}\' != \'\') {
-				\$(\'#quickedit_\'+pid).sceditor(\'instance\').sourceMode(true);
+				\$(\'textarea[name*=\"value\"]\').sceditor(\'instance\').sourceMode(true);
 			}
 		},400);
 	});
