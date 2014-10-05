@@ -19,7 +19,7 @@ function quickadveditor_info ()
 		"website"		 => "",
 		"author"		=> "martec",
 		"authorsite"	=> "",
-		"version"		 => "5.5.0",
+		"version"		 => "5.5.1",
 		"guid"			   => "",
 		"compatibility" => "18*"
 	);
@@ -189,7 +189,7 @@ if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
 		\$.jGrowl(\'<img src=\"images/spinner_big.gif\" />\');
 		ed_id = \$(this).attr(\'id\');
 		var pid = ed_id.replace( /[^0-9]/g, \'\');
-		\$(\'#quickedit_\'+pid).height(\'300px\');
+		\$(\'#quickedit_\'+pid).height({\$mybb->settings[\'quickadveditor_qued_heigh\']}+\'px\');
 		setTimeout(function() {
 			\$(\'#quickedit_\'+pid).sceditor(opt_editor);
 			if (\$(\'#quickedit_\'+pid).sceditor(\'instance\')) {
@@ -222,7 +222,7 @@ if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
 
 
 \$(document).ready(function() {
-	\$(\'#message\').height(\'280px\');
+	\$(\'#message\').height({\$mybb->settings[\'quickadveditor_qurp_heigh\']}+\'px\');
 	var link_can = document.querySelector(\"link[rel=\'canonical\']\");
 	\$(\'#message\').sceditor(opt_editor);
 	MyBBEditor = $(\'#message\').sceditor(\'instance\');
