@@ -19,7 +19,7 @@ function quickadveditor_info ()
 		"website"		 => "",
 		"author"		=> "martec",
 		"authorsite"	=> "",
-		"version"		 => "5.5.2",
+		"version"		 => "5.6.0",
 		"guid"			   => "",
 		"compatibility" => "18*"
 	);
@@ -88,6 +88,16 @@ function quickadveditor_install()
 		'disporder'	=> '5',
 		'gid'		=> $groupid
 	));
+	
+	$db->insert_query('settings', array(
+		'name'		=> 'quickadveditor_savetime',
+		'title'		=> $lang->quickadveditor_savetime_title,
+		'description'	=> $lang->quickadveditor_savetime_desc,
+		'optionscode'	=> 'text',
+		'value'		=> '15',
+		'disporder'	=> '6',
+		'gid'		=> $groupid
+	));	
 
 	$db->insert_query('settings', array(
 		'name'		=> 'quickadveditor_canonicallink',
@@ -95,7 +105,7 @@ function quickadveditor_install()
 		'description'	=> $lang->quickadveditor_canonical_desc,
 		'optionscode'	=> 'onoff',
 		'value'		=> '1',
-		'disporder'	=> '6',
+		'disporder'	=> '7',
 		'gid'		=> $groupid
 	));
 
@@ -105,7 +115,7 @@ function quickadveditor_install()
 		'description'	=> $lang->quickadveditor_save_desc,
 		'optionscode'	=> 'text',
 		'value'		=> $lang->quickadveditor_save_default,
-		'disporder'	=> '7',
+		'disporder'	=> '8',
 		'gid'		=> $groupid
 	));
 
@@ -115,7 +125,7 @@ function quickadveditor_install()
 		'description'	=> $lang->quickadveditor_restor_desc,
 		'optionscode'	=> 'text',
 		'value'		=> $lang->quickadveditor_restor_default,
-		'disporder'	=> '8',
+		'disporder'	=> '9',
 		'gid'		=> $groupid
 	));
 
@@ -160,7 +170,7 @@ function quickadveditor_activate()
 var partialmode = {\$mybb->settings[\'partialmode\']},
 opt_editor = {
 	plugins: \"bbcode\",
-	style: \"{\$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.mybb.css\",
+	style: \"{\$mybb->asset_url}/jscripts/sceditor/textarea_styles/jquery.sceditor.{\$theme[\'editortheme\']}\",
 	rtl: {\$lang->settings[\'rtl\']},
 	locale: \"mybblang\",
 	enablePasteFiltering: true,
@@ -245,7 +255,7 @@ if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
 					}
 				}
 			}
-		},15000);
+		},{\$mybb->settings[\'quickadveditor_savetime\']}*1000);
 
 		setTimeout(function() {
 			restitem = localStorage.getItem(link_can + \'quickreply\');
@@ -306,7 +316,7 @@ if(typeof Thread !== \'undefined\')
 var partialmode = {\$mybb->settings[\'partialmode\']},
 opt_editor = {
 	plugins: \"bbcode\",
-	style: \"{\$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.mybb.css\",
+	style: \"{\$mybb->asset_url}/jscripts/sceditor/textarea_styles/jquery.sceditor.{\$theme[\'editortheme\']}\",
 	rtl: {\$lang->settings[\'rtl\']},
 	locale: \"mybblang\",
 	enablePasteFiltering: true,
@@ -362,7 +372,7 @@ opt_editor = {
 					}
 				}
 			}
-		},15000);
+		},{\$mybb->settings[\'quickadveditor_savetime\']}*1000);
 
 		setTimeout(function() {
 			restitem = localStorage.getItem(location.href + \'quickreply\');
