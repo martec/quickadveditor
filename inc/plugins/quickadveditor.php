@@ -19,7 +19,7 @@ function quickadveditor_info ()
 		"website"		 => "",
 		"author"		=> "martec",
 		"authorsite"	=> "",
-		"version"		 => "5.6.0",
+		"version"		 => "5.6.1",
 		"guid"			   => "",
 		"compatibility" => "18*"
 	);
@@ -233,7 +233,7 @@ if({\$mybb->settings[\'quickadveditor_qedit\']}!=0) {
 
 \$(document).ready(function() {
 	\$(\'#message\').height(\'{\$mybb->settings[\'quickadveditor_qurp_heigh\']}px\');
-	var link_can = document.querySelector(\"link[rel=\'canonical\']\");
+	var link_can = document.querySelector(\"link[rel=\'canonical\']\").href;
 	\$(\'#message\').sceditor(opt_editor);
 	MyBBEditor = $(\'#message\').sceditor(\'instance\');
 	{\$sourcemode}
