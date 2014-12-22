@@ -30,7 +30,7 @@ EOF;
 		"website"		 => "https://github.com/martec/quickadveditor",
 		"author"		=> "martec",
 		"authorsite"	=> "http://community.mybb.com/user-49058.html",
-		"version"		 => "6.1.0",
+		"version"		 => "6.1.1",
 		"guid"			   => "",
 		"compatibility" => "18*"
 	);
@@ -303,12 +303,13 @@ if({\$mybb->settings['quickadveditor_qedit']}!=0) {
 });
 
 (\$.fn.on || \$.fn.live).call(\$(document), 'click', 'input[accesskey*=\"s\"]', function () {
-	qae_ac();
+	if({\$mybb->settings['quickadveditor_autosave']}!=0) {
+		qae_ac();
+	}
 });
 
 \$(document).ready(function() {
 	\$('#message').height('{\$mybb->settings['quickadveditor_qurp_heigh']}px');
-	var link_can = document.querySelector(\"link[rel='canonical']\").href;
 	\$('#message').sceditor(opt_editor);
 	MyBBEditor = $('#message').sceditor('instance');
 	{\$sourcemode}
@@ -319,6 +320,7 @@ if({\$mybb->settings['quickadveditor_qedit']}!=0) {
 		},{\$mybb->settings['quickadveditor_savetime']}*1000);
 
 		setTimeout(function() {
+			link_can = document.querySelector(\"link[rel='canonical']\").href;
 			sc_asd = JSON.parse(localStorage.getItem('sc_as'));
 			restitem = \"\";
 			if (sc_asd) {
@@ -352,7 +354,6 @@ if(typeof Thread !== 'undefined')
 {
 	var quickReplyFunc = Thread.quickReply;
 	Thread.quickReply = function(e) {
-		var link_can = document.querySelector(\"link[rel='canonical']\").href;
 		if(MyBBEditor) {
 			MyBBEditor.updateOriginal();
 			if({\$mybb->settings['quickadveditor_autosave']}!=0) {
@@ -452,7 +453,9 @@ function qae_ar() {
 
 (\$.fn.on || \$.fn.live).call(\$(document), 'click', 'input[accesskey*=\"s\"]', function () {
 	MyBBEditor.updateOriginal();
-	qae_ac();
+	if({\$mybb->settings['quickadveditor_autosave']}!=0) {
+		qae_ac();
+	}
 });
 
 (\$.fn.on || \$.fn.live).call(\$(document), 'click', 'input[name*=\"preview\"]', function () {
