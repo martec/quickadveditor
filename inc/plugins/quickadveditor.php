@@ -30,8 +30,7 @@ EOF;
 		"website"		 => "https://github.com/martec/quickadveditor",
 		"author"		=> "martec",
 		"authorsite"	=> "http://community.mybb.com/user-49058.html",
-		"version"		 => "6.1.1",
-		"guid"			   => "",
+		"version"		 => "6.1.2",
 		"compatibility" => "18*"
 	);
 }
@@ -50,17 +49,17 @@ function quickadveditor_install()
 		'isdefault'	=> '0'
 	));
 
-	if($mybb->version_code < 1801)
-	{
-		flash_message("{$lang->quickadveditor_mybbver_req}", "error");
-		admin_redirect("index.php?module=config-plugins");
-	}
+    if($mybb->version_code < 1804)
+    {
+        flash_message("{$lang->quickadveditorplus_mybbver_req}", "error");
+        admin_redirect("index.php?module=config-plugins");
+    }
 
 	$new_setting[] = array(
 		'name'		=> 'quickadveditor_qurp_heigh',
 		'title'		=> $lang->quickadveditor_qurp_heigh_title,
 		'description'	=> $lang->quickadveditor_qurp_heigh_desc,
-		'optionscode'	=> 'text',
+		'optionscode'	=> 'numeric',
 		'value'		=> '280',
 		'disporder'	=> '1',
 		'gid'		=> $groupid
@@ -70,7 +69,7 @@ function quickadveditor_install()
 		'name'		=> 'quickadveditor_qued_heigh',
 		'title'		=> $lang->quickadveditor_qued_heigh_title,
 		'description'	=> $lang->quickadveditor_qued_heigh_desc,
-		'optionscode'	=> 'text',
+		'optionscode'	=> 'numeric',
 		'value'		=> '300',
 		'disporder'	=> '2',
 		'gid'		=> $groupid
@@ -110,7 +109,7 @@ function quickadveditor_install()
 		'name'		=> 'quickadveditor_savetime',
 		'title'		=> $lang->quickadveditor_savetime_title,
 		'description'	=> $lang->quickadveditor_savetime_desc,
-		'optionscode'	=> 'text',
+		'optionscode'	=> 'numeric',
 		'value'		=> '15',
 		'disporder'	=> '6',
 		'gid'		=> $groupid
@@ -120,7 +119,7 @@ function quickadveditor_install()
 		'name'		=> 'quickadveditor_saveamount',
 		'title'		=> $lang->quickadveditor_saveamount_title,
 		'description'	=> $lang->quickadveditor_saveamount_desc,
-		'optionscode'	=> 'text',
+		'optionscode'	=> 'numeric',
 		'value'		=> '20',
 		'disporder'	=> '7',
 		'gid'		=> $groupid
@@ -185,11 +184,12 @@ function quickadveditor_activate()
 
 	$new_template_global['codebutquick'] = "<link rel=\"stylesheet\" href=\"{\$mybb->asset_url}/jscripts/sceditor/editor_themes/{\$theme['editortheme']}\" type=\"text/css\" media=\"all\" />
 <script type=\"text/javascript\" src=\"{\$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js\"></script>
-<script type=\"text/javascript\" src=\"{\$mybb->asset_url}/jscripts/bbcodes_sceditor.js\"></script>
+<script type=\"text/javascript\" src=\"{\$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1804\"></script>
+<script type=\"text/javascript\" src=\"{\$mybb->asset_url}/jscripts/sceditor/editor_plugins/undo.js?ver=1804\"></script>
 <script type=\"text/javascript\">
 var partialmode = {\$mybb->settings['partialmode']},
 opt_editor = {
-	plugins: \"bbcode\",
+	plugins: \"bbcode,undo\",
 	style: \"{\$mybb->asset_url}/jscripts/sceditor/textarea_styles/jquery.sceditor.{\$theme['editortheme']}\",
 	rtl: {\$lang->settings['rtl']},
 	locale: \"mybblang\",
@@ -1044,7 +1044,7 @@ function codebuttonsquick_lite () {
 	if($mybb->settings['quickadveditor_smile'] != 0) {
 		$smilieinserter = build_clickable_smilies();
 	}
-	if($mybb->settings['quickreply'] == 0) {
+	if(($mybb->settings['quickreply'] == 0) || ($mybb->user['showquickreply'] == 0)) {
 		$codebutquickedt = mycode_inserter_quick_lite();
 	}
 }

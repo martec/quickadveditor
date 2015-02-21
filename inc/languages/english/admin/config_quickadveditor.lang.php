@@ -1,7 +1,7 @@
 <?php
 $l['quickadveditor_plug_desc'] = 'Advanced editor in quick reply';
 $l['quickadveditor_sett_desc'] = 'Settings related to the Quick Advanced Editor.';
-$l['quickadveditor_mybbver_req'] = 'Sorry, but this plugin requires you to update to 1.8.1 or higher.';
+$l['quickadveditor_mybbver_req'] = 'Sorry, but this plugin requires you to update to 1.8.4 or higher.';
 $l['quickadveditor_qurp_heigh_title'] = 'Height of the editor in quick reply';
 $l['quickadveditor_qurp_heigh_desc'] = 'Set the height of the editor in quick reply (value in px).';
 $l['quickadveditor_qued_heigh_title'] = 'Height of the editor in quick edit';
