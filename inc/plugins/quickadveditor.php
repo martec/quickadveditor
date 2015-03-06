@@ -51,7 +51,7 @@ function quickadveditor_install()
 
     if($mybb->version_code < 1804)
     {
-        flash_message("{$lang->quickadveditorplus_mybbver_req}", "error");
+        flash_message("{$lang->quickadveditor_mybbver_req}", "error");
         admin_redirect("index.php?module=config-plugins");
     }
 
