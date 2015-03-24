@@ -41,6 +41,9 @@ function quickadveditor_install()
 
 	$lang->load('config_quickadveditor');
 
+	$query	= $db->simple_select("settinggroups", "COUNT(*) as rows");
+	$dorder = $db->fetch_field($query, 'rows') + 1;
+
 	$groupid = $db->insert_query('settinggroups', array(
 		'name'		=> 'quickadveditor',
 		'title'		=> 'Quick Advanced Editor',
