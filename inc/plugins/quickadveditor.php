@@ -41,8 +41,8 @@ function quickadveditor_install()
 
 	$lang->load('config_quickadveditor');
 
-	$query	= $db->simple_select("settinggroups", "COUNT(*) as rows");
-	$dorder = $db->fetch_field($query, 'rows') + 1;
+	$query	= $db->simple_select("settinggroups", "COUNT(*) as nums");
+	$dorder = $db->fetch_field($query, 'nums') + 1;
 
 	$groupid = $db->insert_query('settinggroups', array(
 		'name'		=> 'quickadveditor',
@@ -166,8 +166,8 @@ function quickadveditor_is_installed()
 {
 	global $db;
 
-	$query = $db->simple_select("settinggroups", "COUNT(*) as rows", "name = 'quickadveditor'");
-	$rows  = $db->fetch_field($query, 'rows');
+	$query = $db->simple_select("settinggroups", "COUNT(*) as nums", "name = 'quickadveditor'");
+	$rows  = $db->fetch_field($query, 'nums');
 
 	return ($rows > 0);
 }
