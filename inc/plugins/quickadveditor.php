@@ -185,7 +185,7 @@ function quickadveditor_activate()
 	global $db;
 	include_once MYBB_ROOT.'inc/adminfunctions_templates.php';
 
-	$new_template_global['codebutquick'] = "<link rel=\"stylesheet\" href=\"{\$mybb->asset_url}/jscripts/sceditor/editor_themes/{\$theme['editortheme']}\" type=\"text/css\" media=\"all\" />
+	$new_template_global['codebutquick'] = "<link rel=\"stylesheet\" href=\"{\$mybb->asset_url}/jscripts/sceditor/themes/{\$theme['editortheme']}\" type=\"text/css\" media=\"all\" />
 <script type=\"text/javascript\" src=\"{\$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js\"></script>
 <script type=\"text/javascript\" src=\"{\$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1804\"></script>
 <script type=\"text/javascript\" src=\"{\$mybb->asset_url}/jscripts/sceditor/editor_plugins/undo.js?ver=1804\"></script>
@@ -193,7 +193,7 @@ function quickadveditor_activate()
 var partialmode = {\$mybb->settings['partialmode']},
 opt_editor = {
 	plugins: \"bbcode,undo\",
-	style: \"{\$mybb->asset_url}/jscripts/sceditor/textarea_styles/jquery.sceditor.{\$theme['editortheme']}\",
+	style: \"{\$mybb->asset_url}/jscripts/sceditor/styles/jquery.sceditor.{\$theme['editortheme']}\",
 	rtl: {\$lang->settings['rtl']},
 	locale: \"mybblang\",
 	enablePasteFiltering: true,
@@ -372,14 +372,14 @@ if(typeof Thread !== 'undefined')
 };
 </script>";
 
-	$new_template_global['codebutquick_pm'] = "<link rel=\"stylesheet\" href=\"{\$mybb->asset_url}/jscripts/sceditor/editor_themes/{\$theme['editortheme']}\" type=\"text/css\" media=\"all\" />
+	$new_template_global['codebutquick_pm'] = "<link rel=\"stylesheet\" href=\"{\$mybb->asset_url}/jscripts/sceditor/themes/{\$theme['editortheme']}\" type=\"text/css\" media=\"all\" />
 <script type=\"text/javascript\" src=\"{\$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js\"></script>
 <script type=\"text/javascript\" src=\"{\$mybb->asset_url}/jscripts/bbcodes_sceditor.js\"></script>
 <script type=\"text/javascript\">
 var partialmode = {\$mybb->settings['partialmode']},
 opt_editor = {
 	plugins: \"bbcode\",
-	style: \"{\$mybb->asset_url}/jscripts/sceditor/textarea_styles/jquery.sceditor.{\$theme['editortheme']}\",
+	style: \"{\$mybb->asset_url}/jscripts/sceditor/styles/jquery.sceditor.{\$theme['editortheme']}\",
 	rtl: {\$lang->settings['rtl']},
 	locale: \"mybblang\",
 	enablePasteFiltering: true,
